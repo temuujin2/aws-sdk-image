@@ -1,0 +1,34 @@
+service: myServerless-project3
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: nodejs16.x
+
+functions:
+  function1:
+    handler: index.handler
+    events:
+      - http:
+          path: /img
+          method: post
+
+resources:
+  Resources:
+    FileBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: bucketsobri
+    SampleBucketPolicy:
+      Type: AWS::S3::BucketPolicy
+      Properties:
+        Bucket: !Ref FileBucket
+        PolicyDocument:
+          Statement:
+            - Action:
+                - s3:PutObject
+                - s3:GetObject
+              Effect: Allow
+              Resource:
+                - arn:aws:s3:::bucketsobri/*
+              Principal: '*'
